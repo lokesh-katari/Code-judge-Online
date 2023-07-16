@@ -1,5 +1,5 @@
 const Docker = require("dockerode");
-const fs = require("fs");
+
 const docker = new Docker({ socketPath: "//./pipe/docker_engine" });
 
 const nodejsCompiler = async (code) => {
@@ -8,7 +8,7 @@ const nodejsCompiler = async (code) => {
   let isError = false;
   const filePath = "/app.js";
   // const encodedCode = btoa(code);
-  let newCode = `${code}`;
+  // let newCode = `${code}`;
 
   const container = await docker.createContainer({
     Image: "node:latest",
@@ -25,7 +25,7 @@ const nodejsCompiler = async (code) => {
         [filePath]: {},
       },
     },
-    Cmd: ["sh", "-c", `echo  "${newCode}"> ${filePath}   && node app.js`],
+    Cmd: ["sh", "-c", `echo  "\" ${code}\""> ${filePath}   && node app.js`],
   });
 
   await container.start();

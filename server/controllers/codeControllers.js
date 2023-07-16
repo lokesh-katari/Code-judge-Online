@@ -1,4 +1,5 @@
 const moment = require("moment");
+const fs = require("fs");
 
 const {
   nodejsCompiler,
@@ -14,7 +15,8 @@ exports.CompileCode = async (req, res) => {
   // code = code.replace(/\r\n/g, "\n");
   // const replacedCode = code.replace(regex, '$1\\\\\\\\n"');
   let code = req.body.code;
-  code = JSON.parse(code); //json parsing should be avoided
+  // code = JSON.parse(code); //json parsing should be avoided
+
   let language = req.body.language;
   console.log(language, code);
   try {

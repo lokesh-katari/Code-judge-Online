@@ -7,15 +7,25 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 const Home = () => {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState(null);
-  let encodedCode = JSON.stringify(code.replace(/\r\n/g, "\n"));
 
+  let encodedCode = JSON.stringify(code.replace(/\r\n/g, "\n"));
+  console.log(encodedCode);
+  // const regex = /(['"])(.*?)(\\r|\\n)/g;
+
+  // let replacedString = encodedCode.replace(regex, "$1$2\\\\\\n");
+  // replacedString = replacedString.replace(/\\\\n/g, "\n");
+  let replacedString = encodedCode.replace(/\\\\n/g, "\\\\\\\\n");
+  console.log(replacedString);
   const [language, setLanguage] = useState("");
   const runCode = async (e) => {
     e.preventDefault();
+    // console.log(encodedCode);
+    // let eCode = `\'${encodedCode}\'`;
+    // console.log(eCode);
     try {
       const { data } = await axios.post(
         "http://localhost:5000/api/v1/compile",
-        { code: encodedCode, language },
+        { code: replacedString, language },
         {
           headers: {
             "Content-Type": "application/json",
