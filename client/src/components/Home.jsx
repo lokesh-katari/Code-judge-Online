@@ -38,45 +38,56 @@ const Home = () => {
       console.error(error);
     }
   };
+  const myString = "This is a string\nwith a newline\ncharacter.";
+
+  // Replace \n with actual new lines
+  const stringWithNewLines = output.replace(/\\n/g, "\n");
   return (
     <>
-      <select
-        class="w-25 m-3"
-        value={language}
-        onChange={(e) => setLanguage(e.target.value)}
-        aria-label="Default select example"
-      >
-        <option>Open this select menu</option>
-        <option value="javascript">javascript</option>
-        <option value="python">python</option>
-        <option value="cpp">cpp</option>
-      </select>
+      <div className="mt-24">
+        <select
+          class="w-25 m-3"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+          aria-label="Default select example"
+        >
+          <option>Open this select menu</option>
+          <option value="javascript">javascript</option>
+          <option value="python">python</option>
+          <option value="cpp">cpp</option>
+        </select>
 
-      <div class=" vh-100 mx-3">
-        <Editor
-          height="70vh"
-          width="60vw"
-          theme="vs-dark"
-          language={language}
-          onChange={(e) => setCode(e)}
-          value={code}
-        />
-        <div className="m-lg">
-          <button
-            className="mx-2 btn btn-primary"
-            type="button"
-            onClick={runCode}
-          >
-            Run
-          </button>
-          <button type="button" class="btn btn-primary">
-            Submit
-          </button>
+        <div class=" vh-100 mx-3">
+          <Editor
+            height="70vh"
+            width="60vw"
+            theme="vs-dark"
+            language={language}
+            onChange={(e) => setCode(e)}
+            value={code}
+          />
+          <div className="m-lg">
+            <button
+              className="mx-2 btn btn-primary"
+              type="button"
+              onClick={runCode}
+            >
+              Run
+            </button>
+            <button type="button" class="btn btn-primary">
+              Submit
+            </button>
+          </div>
+
+          <SyntaxHighlighter language="plaintext" style={vscDarkPlus}>
+            {output}
+          </SyntaxHighlighter>
         </div>
-
-        <SyntaxHighlighter language="plaintext" style={vscDarkPlus}>
-          {output}
-        </SyntaxHighlighter>
+      </div>
+      <div>
+        {myString}
+        {/* Display the string with new lines */}
+        <pre>{}</pre>
       </div>
     </>
   );
