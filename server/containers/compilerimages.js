@@ -6,7 +6,7 @@ const nodejsCompiler = async (code) => {
   console.log("this is compiler code", code);
   let output = "";
   let isError = false;
-  const filePath = "/app.js";
+  const filePath = "/apps.js";
   // const encodedCode = btoa(code);
   // let newCode = `${code}`;
 
@@ -19,13 +19,14 @@ const nodejsCompiler = async (code) => {
     OpenStdin: true,
     StdinOnce: false,
     HostConfig: {
+      AutoRemove: true,
       Binds: [],
       Mounts: [],
       Volumes: {
         [filePath]: {},
       },
     },
-    Cmd: ["sh", "-c", `echo  "\" ${code}\""> ${filePath}   && node app.js`],
+    Cmd: ["sh", "-c", `echo  "\" ${code}\""> ${filePath}   && node apps.js `],
   });
 
   await container.start();
@@ -63,17 +64,18 @@ const pythonCompiler = async (code) => {
     AttachStdin: true,
     AttachStdout: true,
     AttachStderr: true,
-    Tty: true,
+    Tty: false,
     OpenStdin: true,
     StdinOnce: false,
     HostConfig: {
+      AutoRemove: true,
       Binds: [],
       Mounts: [],
       Volumes: {
         [filePath]: {},
       },
     },
-    Cmd: ["sh", "-c", `echo  ${code} > "${filePath}" && python app.py`],
+    Cmd: ["sh", "-c", `echo  ${code} > "${filePath}" && python app.py  `],
   });
 
   await container.start();

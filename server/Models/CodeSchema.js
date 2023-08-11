@@ -9,6 +9,10 @@ const codeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  problemTitle: {
+    type: String,
+    required: true,
+  },
 });
 
 const code = mongoose.model("code", codeSchema);

@@ -88,9 +88,9 @@ export const Navbar = () => {
           <li>
             <Link
               className="text-gray-100 dark:text-gray-100 hover:text-gray-500 px-4 py-2"
-              to="/products"
+              to="/problems"
             >
-              Products
+              Problems
             </Link>
           </li>
           <li>
