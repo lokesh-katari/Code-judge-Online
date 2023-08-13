@@ -7,20 +7,21 @@ function generateParametersinJS(parameters) {
   }
   return generatedString;
 }
-function generateTestCasesinJS(testCases, problemTitle, output) {
+function generateTestCasesinJS(testCases, problemTitle, output, caseNum) {
   let replacedTitle = "";
   for (let i = 0; i < testCases.length; i++) {
-    replacedTitle += `//Test Case ${i + 1} ::\n`;
+    replacedTitle += `//Test Case ${i + caseNum} ::\n`;
     for (let j = 0; j < testCases[i].name.length; j++) {
       let testcasesString = `let ${testCases[i].name[j]} = ${JSON.stringify(
         testCases[i].values[j]
       )}\n`;
       replacedTitle += testcasesString;
     }
-    replacedTitle += `const result${i + 1} = ${problemTitle}(${testCases[
+    replacedTitle += `console.log("test case ${i + caseNum}:")\n`;
+    replacedTitle += `const result${i + caseNum} = ${problemTitle}(${testCases[
       i
     ].name.join(", ")})//output should be ${output[i]}\n\nconsole.log(result${
-      i + 1
+      i + caseNum
     })`;
   }
 

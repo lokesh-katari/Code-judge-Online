@@ -19,7 +19,7 @@ const nodejsCompiler = async (code) => {
     OpenStdin: true,
     StdinOnce: false,
     HostConfig: {
-      AutoRemove: true,
+      // AutoRemove: true,
       Binds: [],
       Mounts: [],
       Volumes: {
@@ -68,7 +68,7 @@ const pythonCompiler = async (code) => {
     OpenStdin: true,
     StdinOnce: false,
     HostConfig: {
-      AutoRemove: true,
+      // AutoRemove: true,
       Binds: [],
       Mounts: [],
       Volumes: {

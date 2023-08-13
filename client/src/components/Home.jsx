@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import React from "react";
 import Box from "@mui/material/Box";
 import { useDispatch, useSelector } from "react-redux";
-import { compileCode } from "../features/Codes/codeSlice";
+import { compileCode, submitCode } from "../features/Codes/codeSlice";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import CircularProgress from "@mui/material/CircularProgress";
+import TestCasesPassed from "./TestCasesPassed";
 const Home = () => {
   const dispatch = useDispatch();
   const [jscode, setjsCode] = useState("");
@@ -17,8 +18,11 @@ const Home = () => {
   const { id } = useParams();
   let loading = useSelector((state) => state.codeSlice.loading);
   const output = useSelector((state) => state.codeSlice.output);
-
+  const testCasesPassed = useSelector(
+    (state) => state.codeSlice.testCasesPassed
+  );
   const [language, setLanguage] = useState("javascript");
+  const [opcomp, setOpcomp] = useState("IDLE");
   const runCode = async (e) => {
     e.preventDefault();
     try {
@@ -27,7 +31,23 @@ const Home = () => {
         if (match === "\\\\n") return "\\\\\\\\n";
         if (match === "\\\\r") return "\\\\\\\\r";
       });
-      await dispatch(compileCode({ code: replacedString, language }));
+      await dispatch(compileCode({ code: replacedString, language, id }));
+      setOpcomp("RUN");
+      // setOutput(output.replace(/\\n|\\r\\n|<br>/g, "\n"));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const submitCodeSolution = async (e) => {
+    e.preventDefault();
+    try {
+      let encodedCode = JSON.stringify(code.replace(/\r\n/g, "\n"));
+      let replacedString = encodedCode.replace(/\\\\n|\\\\r/g, (match) => {
+        if (match === "\\\\n") return "\\\\\\\\n";
+        if (match === "\\\\r") return "\\\\\\\\r";
+      });
+      await dispatch(submitCode({ code: replacedString, language, id }));
+      setOpcomp("SUBMIT");
       // setOutput(output.replace(/\\n|\\r\\n|<br>/g, "\n"));
     } catch (error) {
       console.error(error);
@@ -44,7 +64,7 @@ const Home = () => {
           },
         }
       );
-      console.log(data.problems.template);
+
       setTemplate(data.problems.template);
       // setCode(data.problems.template[0].codeTemplate);
     };
@@ -108,8 +128,9 @@ const Home = () => {
           <option value="cpp">cpp</option>
         </select>
         <div className="m-1 flex flex-row" style={{ height: "70%" }}>
-          <div className=" ">
+          <div className="">
             <Editor
+              className=""
               height="70vh"
               width="60vw"
               theme="vs-dark"
@@ -129,44 +150,109 @@ const Home = () => {
               <button
                 type="button"
                 className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-4 m-3"
+                onClick={submitCodeSolution}
               >
                 Submit
               </button>
             </div>
           </div>
 
-          <div
-            class=" text-white p-4 rounded-md w-3/6 ml-2"
-            style={{ backgroundColor: "rgba(30,30,30)" }}
-          >
-            <span class="text-blue-400" style={{ color: "rgb(229, 229, 229)" }}>
-              {!loading ? (
-                <>
-                  <p
-                    className="font-mono "
-                    style={{ color: "rgb(9, 186, 30)" }}
+          <div className="flex flex-col  mr-6" style={{ width: "45vw" }}>
+            <div
+              class=" text-white p-4 rounded-md w-full ml-2 h-2/4"
+              style={{ backgroundColor: "rgba(30,30,30)", overflow: "auto" }}
+            >
+              <span
+                class="text-blue-400"
+                style={{ color: "rgb(229, 229, 229)" }}
+              >
+                {!loading ? (
+                  <>
+                    <p
+                      className="font-mono "
+                      style={{ color: "rgb(9, 186, 30)" }}
+                    >
+                      ~ Welcome to Online code judge...
+                    </p>
+                    <pre className="font-mono">{output}</pre>
+                  </>
+                ) : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100%",
+                      width: "100%",
+                      margin: "auto",
+                    }}
                   >
-                    ~ Welcome to Online code judge...
-                  </p>
-                  <pre className="font-mono">{output}</pre>
-                </>
-              ) : (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100%",
-                    width: "100%",
-                    margin: "auto",
-                  }}
-                >
-                  <CircularProgress />
-                  <p className="mt-2">COMPILING....</p>
-                </Box>
+                    <CircularProgress />
+                    <p className="mt-2">COMPILING....</p>
+                  </Box>
+                )}
+              </span>
+            </div>
+            <div
+              className="h-1/2  ml-2 mt-2 w-full text-white p-4 rounded-md font-mono flex justify-center items-center flex-col"
+              style={{ backgroundColor: "rgba(30,30,30)" }}
+            >
+              {opcomp === "RUN" &&
+                (loading ? (
+                  <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        width: "100%",
+                        margin: "auto",
+                      }}
+                    >
+                      <CircularProgress />
+                      <p className="mt-2">Submitting..</p>
+                    </Box>
+                  </>
+                ) : (
+                  <TestCasesPassed
+                    mode={"RUN"}
+                    testcasespassed={testCasesPassed}
+                  />
+                ))}
+              {opcomp === "SUBMIT" && (
+                <TestCasesPassed
+                  mode={"SUBMIT"}
+                  testcasespassed={testCasesPassed}
+                />
               )}
-            </span>
+              {opcomp === "IDLE" &&
+                (loading ? (
+                  <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        width: "100%",
+                        margin: "auto",
+                      }}
+                    >
+                      <CircularProgress />
+                      <p className="mt-2">RUNNING....</p>
+                    </Box>
+                  </>
+                ) : (
+                  <TestCasesPassed
+                    mode={"IDLE"}
+                    testcasespassed={testCasesPassed}
+                  />
+                ))}
+            </div>
           </div>
         </div>
       </div>

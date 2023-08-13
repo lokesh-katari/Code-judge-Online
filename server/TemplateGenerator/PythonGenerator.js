@@ -3,7 +3,8 @@ function pythonMainfuncGenerator(
   problemTitle,
   output,
   inputParams,
-  returnType
+  returnType,
+  caseNum
 ) {
   let replacedTitle = `class Solution:
   def ${problemTitle}(self,${inputParams}):
@@ -12,21 +13,39 @@ function pythonMainfuncGenerator(
       pass\n
   \t#this funciton should return ${returnType}\n\n\n\nif __name__ == "__main__":\n\tsolution = Solution()\n`;
   for (let i = 0; i < testCases.length; i++) {
-    replacedTitle += `#Test Case ${i + 1} ::\n`;
+    replacedTitle += `\tprint("test case ${i + caseNum}:")\n`;
     for (let j = 0; j < testCases[i].name.length; j++) {
       let testcasesString = `\t${testCases[i].name[j]} = ${JSON.stringify(
         testCases[i].values[j]
       )}\n`;
       replacedTitle += testcasesString;
     }
-    replacedTitle += `\tresult${i + 1} = solution.${problemTitle}(${testCases[
-      i
-    ].name.join(", ")})#output should be ${output[i]}\n\n\tprint(result${
-      i + 1
-    })`;
+    replacedTitle += `\tresult${
+      i + caseNum
+    } = solution.${problemTitle}(${testCases[i].name.join(
+      ", "
+    )})#output should be ${output[i]}\n\n\tprint(result${i + caseNum})\n`;
   }
 
   return replacedTitle;
 }
 
-module.exports = { pythonMainfuncGenerator };
+function generateTestCasesforPython(testCases, problemTitle, output, caseNum) {
+  let replacedTitle = "";
+  for (let i = 0; i < testCases.length; i++) {
+    replacedTitle += `\tprint("test case ${i + caseNum}:")\n`;
+    for (let j = 0; j < testCases[i].name.length; j++) {
+      let testcasesString = `\t${testCases[i].name[j]} = ${JSON.stringify(
+        testCases[i].values[j]
+      )}\n`;
+      replacedTitle += testcasesString;
+    }
+    replacedTitle += `\tresult${
+      i + caseNum
+    } = solution.${problemTitle}(${testCases[i].name.join(
+      ", "
+    )})#output should be ${output[i]}\n\n\tprint(result${i + caseNum})\n`;
+  }
+  return replacedTitle;
+}
+module.exports = { pythonMainfuncGenerator, generateTestCasesforPython };
