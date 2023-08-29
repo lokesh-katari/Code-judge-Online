@@ -10,7 +10,6 @@ const upload = multer();
 
 console.log("this is userROuter");
 exports.Userregister = async (req, res, next) => {
-  console.log("this is user register");
   console.log(req.body.name);
   console.log("req.body");
   const image = req.body.avatar;
@@ -30,8 +29,6 @@ exports.Userregister = async (req, res, next) => {
     avator: {
       public_id: myCloud.public_id,
       url: myCloud.secure_url,
-      // public_id: "jhkfafa",
-      // url: "kjhafdahjdf",
     },
   });
 
@@ -154,7 +151,6 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 exports.getUserDetails = catchAsyncErrors(async (req, res) => {
   const userId = req.user.id;
 
-  console.log("this is from get user details", userId);
   const data = await User.findById({ _id: userId });
   console.log(data, "this is data");
   res

@@ -54,14 +54,9 @@ export const Navbar = () => {
           to="/"
           className="text-3xl font-bold leading-none flex items-center space-x-4"
         >
-          <span>
-            <i
-              className="fa-solid fa-cart-shopping fa "
-              style={{ color: "#c5cedd" }}
-            >
-              {" "}
-              E - Shoppy
-            </i>
+          <span className="text-slate-200 " t>
+            {" "}
+            Code Realm
           </span>
         </Link>
         <div className="lg:hidden">

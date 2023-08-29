@@ -44,14 +44,13 @@ function TestCasesPassed({ testcasespassed, mode }) {
         <div
           key={index}
           id="result"
-          className="w-full h-9 p-2 rounded-md m-1 mb-2 flex justify-between"
+          className="w-full h-9 p-2 rounded-md m-1 mb-2 flex justify-between "
           style={{ backgroundColor: "rgba(60, 64, 60)" }}
         >
           {/* The content will be updated dynamically */}
         </div>
       ))}
-
-      {mode === "IDLE" ? (
+      {mode === "IDLE" || mode === "SUBMIT" ? (
         ""
       ) : (
         <div className="mt-8">

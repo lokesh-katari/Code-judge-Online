@@ -12,7 +12,7 @@ export function Problems() {
     async function fetchData() {
       try {
         const { data } = await axios.get(
-          "http://localhost:5000/api/v1/allProblems"
+          "/api/v1/allProblems"
         );
         setloading(false);
 

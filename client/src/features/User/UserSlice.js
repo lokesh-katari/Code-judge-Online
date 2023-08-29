@@ -88,14 +88,15 @@ export const userRegister = createAsyncThunk(
   "register/user",
   async (myform) => {
     console.log(myform.get("name"));
-    console.log(`this is userRegister${myform}`);
+    console.log(`this is userRegister`);
+    // console.log(JSON.parse(myform));
     const { data } = await axios.post(`/api/v1/register`, myform, {
       headers: {
         "Content-Type": "multipart/form-data",
         withCredentials: true,
       },
     });
-    console.log(`this is userRegister`);
+
     console.log(myform);
     return data;
   }
@@ -107,7 +108,7 @@ export const updateUser = createAsyncThunk("update/user", async (myForm) => {
       "Content-Type": "application/json",
     },
   });
-  console.log(`this is userupdate`);
+  // console.log(`this is userupdate`);
 
   return data;
 });

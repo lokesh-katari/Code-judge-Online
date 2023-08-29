@@ -1,5 +1,6 @@
 const moment = require("moment");
-
+const amqp = require("amqplib");
+const { v4: uuidv4 } = require("uuid");
 const codeQueSchema = require("../Models/CodeQuestionSchema");
 const { OutputSeperator } = require("../Utils/TestCaseSeperator");
 const { solutionJudge } = require("../Utils/solutionJudge");
@@ -9,7 +10,7 @@ const {
   generateParametersinJS,
   createFunctionTemplate,
 } = require("../TemplateGenerator/jsGenerator");
-
+const Submission = require("../Models/SubmissionModel");
 const {
   nodejsCompiler,
   pythonCompiler,
@@ -24,146 +25,98 @@ exports.CompileCode = async (req, res) => {
   const currentTime = Date.now();
 
   const formattedTime = moment(currentTime).format("YYYY-MM-DD HH:mm:ss");
-
-  // const regex = /(["'])(\\\\n")/g;
-  // code = code.replace(/\r\n/g, "\n");
-  // const replacedCode = code.replace(regex, '$1\\\\\\\\n"');
   let code = req.body.code;
   // code = JSON.parse(code); //json parsing should be avoided
   let P_id = req.body.id;
   let actualOutput = await codeQueSchema.findById(P_id).select("output");
   let language = req.body.language;
-  // console.log(language, code);
-  try {
-    if (language === "javascript") {
-      let { output, isError } = await nodejsCompiler(code);
+  const connection = await amqp.connect("amqp://localhost");
+  const channel = await connection.createChannel();
 
-      output = output.replace(/\u001b\[\d{1,2}m/g, "");
-      let testCases = OutputSeperator(output, language);
-      // let passedCases = [];
-      // for (let i = 0; i < actualOutput.output.length; i++) {
-      //   if (actualOutput.output[i] === testCases[i]) {
-      //     passedCases.push(i);
-      //   }
-      // }
-      let passedCases = solutionJudge(actualOutput.output, testCases);
-      if (isError) {
-        res.status(200).json({
-          msg: "Execution error:",
-          output: output,
-        });
-      } else {
-        res.status(200).json({
-          msg: "success",
-          output: output,
-          submittedAt: formattedTime,
-          testCases: passedCases,
-        });
-      }
-    }
-    if (language === "python") {
-      let { output, isError } = await pythonCompiler(code);
+  const queue = "codeTest";
+  const message = {
+    language: language,
+    code: code,
+    actualOutput: actualOutput,
+    formattedTime: formattedTime,
+  };
 
-      // output = output.replace(/\u001b\[\d{1,2}m/g, '');
-      output = output.replace(/[\u0000-\u0008\u000b\u000E-\u001F]/g, "");
-      // console.log(output);
-      let testCases = OutputSeperator(output, language);
-      let passedCases = solutionJudge(actualOutput.output, testCases);
-      if (isError) {
-        res.status(201).json({ msg: "Execution error:", output: error });
-      } else {
-        res.status(200).json({
-          msg: "success",
-          output: output,
-          testCases: passedCases,
-          submittedAt: formattedTime,
-        });
-      }
-    }
-  } catch (error) {
-    console.log(error);
-  }
+  await channel.assertQueue(queue);
+  channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+
+  channel.prefetch(1);
+  // console.log(`Sent: ${JSON.stringify(message)}`);
+
+  const result = await new Promise((resolve) => {
+    channel.consume("resultQueue", async (msg) => {
+      let result = msg.content.toString();
+      result = JSON.parse(result);
+
+      channel.ack(msg);
+
+      // Close the channel and connection after receiving the result
+      await channel.close();
+      await connection.close();
+
+      resolve(result);
+    });
+  });
+
+  console.log(result);
+  res.json(result).status(200);
+  // connection.close();
 };
 exports.submitSolution = async (req, res) => {
-  const currentTime = Date.now();
-
-  const formattedTime = moment(currentTime).format("YYYY-MM-DD HH:mm:ss");
-  let code = req.body.code;
-  let P_id = req.body.id;
-  let i = 3; //test case generator
-  let queryResult = await codeQueSchema
-    .findById(P_id)
-    .select("hiddenOutputs")
-    .select("hiddenTestCases")
-    .select("ProblemTitle")
-    .select("output");
-  let totalOutputs = queryResult.output.concat(queryResult.hiddenOutputs);
-  let hiddenOutputs = queryResult.hiddenOutputs;
-  let hiddenTestCases = queryResult.hiddenTestCases;
-  let proTitle = queryResult.ProblemTitle;
-
-  let language = req.body.language;
   try {
-    if (language === "javascript") {
-      let hiddenTestCasesTemplate = generateTestCasesinJS(
-        hiddenTestCases,
-        proTitle,
-        hiddenOutputs,
-        i
-      );
-      let formatcode = JSON.stringify(hiddenTestCasesTemplate);
-      code += formatcode;
-      let { output, isError } = await nodejsCompiler(code);
+    const connection = await amqp.connect("amqp://localhost");
+    const channel = await connection.createChannel();
+    const currentTime = Date.now();
+    let userId = req.user.id;
+    // console.log("this is userid", req.user);
+    console.log("hii");
+    const formattedTime = moment(currentTime).format("YYYY-MM-DD HH:mm:ss");
+    let code = req.body.code;
+    let P_id = req.body.id;
+    // let i = 3; //test case generator
 
-      output = output.replace(/\u001b\[\d{1,2}m/g, "");
-      let testCases = OutputSeperator(output, language);
-      let passedCases = solutionJudge(totalOutputs, testCases);
-      if (isError) {
-        res.status(200).json({
-          msg: "Execution error:",
-          output: formatcode,
-        });
-      } else {
-        res.status(200).json({
-          msg: "success",
-          output: output,
-          submittedAt: formattedTime,
-          testCases: passedCases,
-        });
-      }
-    }
-    if (language === "python") {
-      let hiddenTestCasesTemplate = generateTestCasesforPython(
-        hiddenTestCases,
-        proTitle,
-        hiddenOutputs,
-        i
-      );
-      let formatcode = JSON.stringify(hiddenTestCasesTemplate);
-      code += formatcode;
-      // console.log(code);
-      let { output, isError } = await pythonCompiler(code);
-      // output = output.replace(/\u001b\[\d{1,2}m/g, '');
-      output = output.replace(/[\u0000-\u0008\u000b\u000E-\u001F]/g, "");
-      // console.log(output);
-      let testCases = OutputSeperator(output, language);
-      let passedCases = solutionJudge(totalOutputs, testCases);
-      if (isError) {
-        res.status(200).json({ msg: "Execution error:", output: output });
-      } else {
-        res.status(200).json({
-          msg: "success",
-          output: output,
-          testCases: passedCases,
-          submittedAt: formattedTime,
-        });
-      }
-    }
+    let processId = uuidv4();
+
+    let language = req.body.language;
+    let queryResult = await codeQueSchema
+      .findById(P_id)
+      .select("hiddenOutputs")
+      .select("hiddenTestCases")
+      .select("ProblemTitle")
+      .select("output");
+    let totalOutputs = queryResult.output.concat(queryResult.hiddenOutputs);
+    let hiddenOutputs = queryResult.hiddenOutputs;
+    let hiddenTestCases = queryResult.hiddenTestCases;
+    let proTitle = queryResult.ProblemTitle;
+    const queue = "codeSubmit";
+    const message = {
+      language: language,
+      code: code,
+      formattedTime: formattedTime,
+      hiddenTestCases: hiddenTestCases,
+      hiddenOutputs: hiddenOutputs,
+      totalOutputs: totalOutputs,
+      proTitle: proTitle,
+      processId: processId,
+      userId: userId,
+      submittedAt: formattedTime,
+    };
+    await channel.assertQueue(queue);
+    await channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));
+    // console.log(formatcode);
+    // console.log(hiddenTestCasesTemplate);
+    await channel.close();
+    await connection.close();
+    res
+      .status(200)
+      .json({ msg: "code submission queued", processId: processId });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ msg: error, req: "not found" });
   }
-  // console.log(formatcode);
-  // console.log(hiddenTestCasesTemplate);
 };
 exports.codeQueSubmit = async (req, res) => {
   let i = 1; //test case generator
@@ -258,6 +211,17 @@ exports.getSingleProblems = async (req, res) => {
       success: true,
       problems: problem,
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+exports.fetchResult = async (req, res) => {
+  try {
+    const data = await Submission.findOne({ processId: req.params.processId });
+    res.status(200).json(data);
   } catch (error) {
     res.status(500).json({
       success: false,

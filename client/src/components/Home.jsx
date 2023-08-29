@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import React from "react";
 import Box from "@mui/material/Box";
 import { useDispatch, useSelector } from "react-redux";
-import { compileCode, submitCode } from "../features/Codes/codeSlice";
+import {
+  compileCode,
+  submitCode,
+  fetchResultFunc,
+} from "../features/Codes/codeSlice";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
@@ -14,6 +18,7 @@ const Home = () => {
   const [pycode, setpyCode] = useState("");
   const [cppcode, setCppCode] = useState("");
   const [code, setCode] = useState("");
+  // let [loading, setloading] = useState(false);
   const [template, setTemplate] = useState([]);
   const { id } = useParams();
   let loading = useSelector((state) => state.codeSlice.loading);
@@ -33,6 +38,7 @@ const Home = () => {
       });
       await dispatch(compileCode({ code: replacedString, language, id }));
       setOpcomp("RUN");
+
       // setOutput(output.replace(/\\n|\\r\\n|<br>/g, "\n"));
     } catch (error) {
       console.error(error);
@@ -40,30 +46,51 @@ const Home = () => {
   };
   const submitCodeSolution = async (e) => {
     e.preventDefault();
+    // setloading(true);
     try {
       let encodedCode = JSON.stringify(code.replace(/\r\n/g, "\n"));
       let replacedString = encodedCode.replace(/\\\\n|\\\\r/g, (match) => {
         if (match === "\\\\n") return "\\\\\\\\n";
         if (match === "\\\\r") return "\\\\\\\\r";
       });
-      await dispatch(submitCode({ code: replacedString, language, id }));
-      setOpcomp("SUBMIT");
-      // setOutput(output.replace(/\\n|\\r\\n|<br>/g, "\n"));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  // Replace \n with actual new lines
-  useEffect(() => {
-    const getTemplateCode = async ({ problemId }) => {
-      const { data } = await axios.get(
-        `http://localhost:5000/api/v1/problems/${problemId}`,
+      // dispatch(submitCode({ code: replacedString, language, id }));
+      const { data } = await axios.post(
+        "/api/v1/problem/submit",
+        { code: replacedString, language, id },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
+      console.log(data.processId);
+      dispatch(fetchResultFunc(data.processId));
+      setOpcomp("SUBMIT");
+      // setOutput(output.replace(/\\n|\\r\\n|<br>/g, "\n"));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // function fetchResultbyPolling(processId) {
+  //   setInterval(() => {
+  //     const fetchinner = (processId) => {
+  //       let { data } = axios.get();
+  //       if (data) {
+  //         clearTimeout(3000);
+  //         return data;
+  //       }
+  //     };
+  //   }, 3000);
+  // }
+
+  // Replace \n with actual new lines
+  useEffect(() => {
+    const getTemplateCode = async ({ problemId }) => {
+      const { data } = await axios.get(`/api/v1/problems/${problemId}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       setTemplate(data.problems.template);
       // setCode(data.problems.template[0].codeTemplate);
@@ -189,7 +216,7 @@ const Home = () => {
                     }}
                   >
                     <CircularProgress />
-                    <p className="mt-2">COMPILING....</p>
+                    <p className="mt-2">submition queued....</p>
                   </Box>
                 )}
               </span>
@@ -222,12 +249,30 @@ const Home = () => {
                     testcasespassed={testCasesPassed}
                   />
                 ))}
-              {opcomp === "SUBMIT" && (
-                <TestCasesPassed
-                  mode={"SUBMIT"}
-                  testcasespassed={testCasesPassed}
-                />
-              )}
+              {opcomp === "SUBMIT" &&
+                (loading ? (
+                  <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "100%",
+                        width: "100%",
+                        margin: "auto",
+                      }}
+                    >
+                      <CircularProgress />
+                      <p className="mt-2">Submitting..</p>
+                    </Box>
+                  </>
+                ) : (
+                  <TestCasesPassed
+                    mode={"SUBMIT"}
+                    testcasespassed={testCasesPassed}
+                  />
+                ))}
               {opcomp === "IDLE" &&
                 (loading ? (
                   <>

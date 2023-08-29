@@ -7,30 +7,13 @@ const initialState = {
   output: "",
   message: "",
   testCasesPassed: [],
+  processId: "",
 };
 export const compileCode = createAsyncThunk(
   "code/compile",
   async ({ code, language, id }) => {
-    // console.log(`this is userRegister${myform}`);
     const { data } = await axios.post(
-      "http://localhost:5000/api/v1/compile",
-      { code, language, id },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    return data;
-  }
-);
-export const submitCode = createAsyncThunk(
-  "code/submit",
-  async ({ code, language, id }) => {
-    // console.log(`this is userRegister${myform}`);
-    const { data } = await axios.post(
-      "http://localhost:5000/api/v1/problem/submit",
+      "/api/v1/compile",
       { code, language, id },
       {
         headers: {
@@ -46,7 +29,24 @@ export const submitCode = createAsyncThunk(
 const codeSlice = createSlice({
   name: "codeSlice",
   initialState,
-  reducers: {},
+  reducers: {
+    fetchResult: (state, action) => {
+      state.output = action.payload.output;
+      state.testCasesPassed = action.payload.testCasesPassed;
+      state.message = action.payload.msg;
+      state.loading = false;
+    },
+    fetchResultLoading: (state, action) => {
+      state.loading = true;
+      state.error = null;
+      state.processId = "";
+    },
+    fetchResultRejected: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.processId = "";
+    },
+  },
   extraReducers: {
     [compileCode.pending]: (state, action) => {
       state.loading = true;
@@ -63,22 +63,40 @@ const codeSlice = createSlice({
       state.loading = false;
       state.error = action.error.message;
     },
-    [submitCode.pending]: (state, action) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [submitCode.fulfilled]: (state, action) => {
-      state.loading = false;
-      let parOut = action.payload.output;
-      state.output = parOut.replace(/\\n|\\r\\n|<br>/g, "\n");
-      state.message = action.payload.msg;
-      state.testCasesPassed = action.payload.testCases;
-    },
-    [submitCode.rejected]: (state, action) => {
-      state.loading = false;
-      state.error = action.error.message;
-    },
   },
 });
-
+export const {
+  fetchResult,
+  fetchResultLoading,
+  fetchResultRejected,
+  submitCode,
+} = codeSlice.actions;
 export default codeSlice.reducer;
+
+export const fetchResultFunc = (processId) => async (dispatch, getState) => {
+  await dispatch(fetchResultLoading());
+  const pollInterval = setInterval(async () => {
+    console.log(processId);
+    console.log("this is process id");
+    try {
+      let { data } = await axios.get(
+        `/api/v1/problem/submit/fetch/${processId}`
+      );
+      if (data) {
+        dispatch(
+          fetchResult({
+            output: data.result.output,
+            testCasesPassed: data.result.testCases,
+            msg: data.result.msg,
+          })
+        );
+        clearInterval(pollInterval); // Stop polling after fetching data
+      } else {
+        fetchResultLoading(true);
+      }
+    } catch (error) {
+      dispatch(fetchResultRejected("error while fetching the data"));
+      clearInterval(pollInterval); // Stop polling on error
+    }
+  }, 500);
+};

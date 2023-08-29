@@ -34,11 +34,6 @@ export function Register() {
     myForm.append("phone", phone);
     myForm.append("password", password);
     myForm.append("avatar", Avatar);
-
-    // myForm.set("avatar", Avatar);
-    // console.log(myForm.get("name"));
-    // console.log(myForm.get("avatar"));
-    // console.log(JSON.parse(myForm));
     dispatch(userRegister(myForm));
 
     dispatch(resetShowAlert(false));
