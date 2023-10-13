@@ -12,11 +12,15 @@ const {
   generateTestCasesforPython,
 } = require("../TemplateGenerator/PythonGenerator");
 const mongoose = require("mongoose");
-
+// mongodb://127.0.0.1:27017/Online-Code-Judge
 const connectToMongo = () => {
-  mongoose.connect("mongodb://127.0.0.1:27017/Online-Code-Judge").then(() => {
-    console.log(" DB connection successfull ");
-  });
+  mongoose
+    .connect(
+      "mongodb+srv://lokeshkatari921:aI09VQyUrAm78tQS@cluster0.uhgrpv4.mongodb.net/?retryWrites=true&w=majority"
+    )
+    .then(() => {
+      console.log(" DB connection successfull ");
+    });
 };
 async function rcp2() {
   connectToMongo();
@@ -29,6 +33,7 @@ async function rcp2() {
   console.log(`Waiting for messages in ${queue}. To exit press CTRL+C`);
 
   channel.consume(queue, async (msg) => {
+    console.log("mesg consumed");
     let message = msg.content.toString();
     message = JSON.parse(message);
     console.log(message);

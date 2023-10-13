@@ -68,6 +68,7 @@ exports.CompileCode = async (req, res) => {
 };
 exports.submitSolution = async (req, res) => {
   try {
+    console.log("this is user submit");
     const connection = await amqp.connect("amqp://localhost");
     const channel = await connection.createChannel();
     const currentTime = Date.now();

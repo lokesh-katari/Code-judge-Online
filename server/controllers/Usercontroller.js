@@ -12,23 +12,23 @@ console.log("this is userROuter");
 exports.Userregister = async (req, res, next) => {
   console.log(req.body.name);
   console.log("req.body");
-  const image = req.body.avatar;
-  const myCloud = await cloudinary.v2.uploader.upload(image, {
-    folder: "avatars",
-    width: 150,
-    crop: "scale",
-  });
-  console.log("this is my cloiud", myCloud);
+  // const image = req.body.avatar;
+  // const myCloud = await cloudinary.v2.uploader.upload(image, {
+  //   folder: "avatars",
+  //   width: 150,
+  //   crop: "scale",
+  // });
+  // console.log("this is my cloiud", myCloud);
   const { name, phone, Email, password } = req.body;
-
+  console.log(req.body);
   const user = await User.create({
     name,
     Email,
     password,
     phone,
     avator: {
-      public_id: myCloud.public_id,
-      url: myCloud.secure_url,
+      public_id: "myCloud.public_id",
+      url: "myCloud.secure_url",
     },
   });
 

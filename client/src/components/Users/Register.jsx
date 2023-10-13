@@ -33,8 +33,8 @@ export function Register() {
     myForm.append("Email", Email);
     myForm.append("phone", phone);
     myForm.append("password", password);
-    myForm.append("avatar", Avatar);
-    dispatch(userRegister(myForm));
+    // myForm.append("avatar", Avatar);
+    dispatch(userRegister({ name, Email, phone, password }));
 
     dispatch(resetShowAlert(false));
   };
