@@ -1,6 +1,6 @@
 const Docker = require("dockerode");
 
-const docker = new Docker({ socketPath: "//./pipe/docker_engine" });
+const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
 const nodejsCompiler = async (code) => {
   console.log("this is compiler code", code);
