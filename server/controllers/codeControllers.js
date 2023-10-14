@@ -70,10 +70,11 @@ exports.submitSolution = async (req, res) => {
   try {
     console.log("this is user submit");
     const connection = await amqp.connect("amqp://localhost");
+    console.log("this is userid", req);
     const channel = await connection.createChannel();
+    console.log("this is userid", req.user);
     const currentTime = Date.now();
     let userId = req.user.id;
-    // console.log("this is userid", req.user);
     console.log("hii");
     const formattedTime = moment(currentTime).format("YYYY-MM-DD HH:mm:ss");
     let code = req.body.code;

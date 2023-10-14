@@ -86,12 +86,12 @@ export const LogoutUser = createAsyncThunk("logout/user", async () => {
 });
 export const userRegister = createAsyncThunk(
   "register/user",
-  async (name, Email, phone, password) => {
+  async ({ name, Email, phone, password }) => {
     // console.log(myform.get("name"));
     // console.log(`this is userRegister`);
     // console.log(JSON.parse(myform));
     const { data } = await axios.post(
-      `http://localhost:5000/api/v1/register`,
+      `/api/v1/register`,
       { name, Email, phone, password },
       {
         headers: {
