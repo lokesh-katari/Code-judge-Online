@@ -22,6 +22,10 @@ const Submissions = new mongoose.Schema({
     testCases: {
       type: Array,
     },
+    codeSubmitted: {
+      type: String,
+      required: true,
+    },
   },
   processId: {
     type: String,

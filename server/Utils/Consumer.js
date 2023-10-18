@@ -17,7 +17,7 @@ async function rcp() {
   channel.consume(queue, async (msg) => {
     let message = msg.content.toString();
     message = JSON.parse(message);
-    console.log(message);
+    // console.log(message);
     const language = message.language;
     const code = message.code;
     const actualOutput = message.actualOutput;
@@ -27,7 +27,8 @@ async function rcp() {
     let result;
     try {
       if (language === "javascript") {
-        let { output, isError } = await nodejsCompiler(code);
+        let { output, isError, executionTime } = await nodejsCompiler(code);
+        console.log(executionTime, "this is eceution itme");
 
         output = output.replace(/\u001b\[\d{1,2}m/g, "");
         let testCases = OutputSeperator(output, language);
@@ -36,6 +37,8 @@ async function rcp() {
           result = {
             msg: "Execution error:",
             output: output,
+            testCases: [],
+            executionTime: executionTime,
           };
           // return res.status(200).json(result);
         } else {
@@ -44,13 +47,14 @@ async function rcp() {
             output: output,
             submittedAt: formattedTime,
             testCases: passedCases,
+            executionTime: executionTime,
           };
           // return res.status(200).json(result);
         }
       }
       if (language === "python") {
-        let { output, isError } = await pythonCompiler(code);
-
+        let { output, isError, executionTime } = await pythonCompiler(code);
+        console.log("this is eexecution time", executionTime);
         // output = output.replace(/\u001b\[\d{1,2}m/g, '');
         output = output.replace(/[\u0000-\u0008\u000b\u000E-\u001F]/g, "");
         // console.log(output);
@@ -58,8 +62,10 @@ async function rcp() {
         let passedCases = solutionJudge(actualOutput.output, testCases);
         if (isError) {
           result = {
-            msg: "Execution error:",
+            msg: "Execution error: tata",
+            testCases: [],
             output: output,
+            executionTime: executionTime,
           };
           //  return res.status(200).json(result);
         } else {
@@ -68,6 +74,7 @@ async function rcp() {
             output: output,
             submittedAt: formattedTime,
             testCases: passedCases,
+            executionTime: executionTime,
           };
           // return res.status(200).json(result);
         }

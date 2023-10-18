@@ -1,7 +1,7 @@
 const Docker = require("dockerode");
 
-const docker = new Docker({ socketPath: '/var/run/docker.sock' });
-
+const docker = new Docker({ socketPath: "//./pipe/docker_engine" });
+// /var/run/docker.sock
 const nodejsCompiler = async (code) => {
   console.log("this is compiler code", code);
   let output = "";
@@ -9,7 +9,6 @@ const nodejsCompiler = async (code) => {
   const filePath = "/apps.js";
   // const encodedCode = btoa(code);
   // let newCode = `${code}`;
-
   const container = await docker.createContainer({
     Image: "node:latest",
     AttachStdin: true,
@@ -19,7 +18,7 @@ const nodejsCompiler = async (code) => {
     OpenStdin: true,
     StdinOnce: false,
     HostConfig: {
-      // AutoRemove: true,
+      AutoRemove: true,
       Binds: [],
       Mounts: [],
       Volumes: {
@@ -28,14 +27,25 @@ const nodejsCompiler = async (code) => {
     },
     Cmd: ["sh", "-c", `echo  "\" ${code}\""> ${filePath}   && node apps.js `],
   });
-
+  const startTime = new Date();
   await container.start();
   const logsStream = await container.logs({
     follow: true,
     stdout: true,
     stderr: true,
   });
+  const tle = setTimeout(async () => {
+    console.log("Sending a TLE");
+    await container.stop();
+  }, 2000); // Adjust the time limit as needed
 
+  const containerExitStatus = await container.wait();
+
+  // Record the end time
+  const endTime = new Date();
+
+  // Calculate the execution time in milliseconds
+  const executionTime = endTime - startTime;
   logsStream.on("data", (chunk) => {
     const chunkString = chunk.toString();
     output += chunkString;
@@ -53,7 +63,8 @@ const nodejsCompiler = async (code) => {
   await new Promise((resolve) => {
     logsStream.on("end", resolve);
   });
-  return { output, isError };
+  clearTimeout(tle);
+  return { output, isError, executionTime };
 };
 const pythonCompiler = async (code) => {
   let output = "";
@@ -68,7 +79,7 @@ const pythonCompiler = async (code) => {
     OpenStdin: true,
     StdinOnce: false,
     HostConfig: {
-      // AutoRemove: true,
+      AutoRemove: true,
       Binds: [],
       Mounts: [],
       Volumes: {
@@ -77,13 +88,27 @@ const pythonCompiler = async (code) => {
     },
     Cmd: ["sh", "-c", `echo  ${code} > "${filePath}" && python app.py  `],
   });
-
+  const startTime = new Date();
   await container.start();
+
   const logsStream = await container.logs({
     follow: true,
     stdout: true,
     stderr: true,
   });
+
+  const tle = setTimeout(async () => {
+    console.log("Sending a TLE");
+    await container.stop();
+  }, 2000); // Adjust the time limit as needed
+
+  const containerExitStatus = await container.wait();
+
+  // Record the end time
+  const endTime = new Date();
+
+  // Calculate the execution time in milliseconds
+  const executionTime = endTime - startTime;
 
   logsStream.on("data", (chunk) => {
     const chunkString = chunk.toString();
@@ -102,7 +127,8 @@ const pythonCompiler = async (code) => {
   await new Promise((resolve) => {
     logsStream.on("end", resolve);
   });
-  return { output, isError };
+  clearTimeout(tle);
+  return { output, isError, executionTime };
 };
 
 module.exports = { nodejsCompiler, pythonCompiler };

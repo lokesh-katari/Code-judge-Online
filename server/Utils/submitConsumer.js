@@ -40,6 +40,7 @@ async function rcp2() {
     let language = message.language;
     let processId = message.processId;
     let code = message.code;
+    let subCode = message.code;
     let hiddenOutputs = message.hiddenOutputs;
     let totalOutputs = message.totalOutputs;
     let hiddenTestCases = message.hiddenTestCases;
@@ -74,6 +75,7 @@ async function rcp2() {
               output: output,
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
+              codeSubmitted: subCode,
             },
             processId: processId,
           });
@@ -86,6 +88,7 @@ async function rcp2() {
               output: output,
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
+              codeSubmitted: subCode,
             },
             processId: processId,
           });
@@ -116,6 +119,7 @@ async function rcp2() {
               output: output,
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
+              codeSubmitted: subCode,
             },
             processId: processId,
           });
@@ -128,6 +132,7 @@ async function rcp2() {
               output: output,
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
+              codeSubmitted: subCode,
             },
             processId: processId,
           });

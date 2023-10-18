@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "all": "concurrently \"nodemon ./server/server.js\" \"node ./server/Utils/submitConsumer.js\" \"node ./server/Utils/Consumer.js\" \"cd client && npm start\""
+    "all": "concurrently \"nodemon ./server/server.js\" \"node ./server/Utils/submitConsumer.js\" \"node ./server/Utils/Consumer.js\" \"cd client && npm start\"",
+    "dev":"nodemon ./server/server.js"
   },
   "author": "lokesh-katari",
   "license": "ISC",
