@@ -27,8 +27,8 @@ const nodejsCompiler = async (code) => {
     },
     Cmd: ["sh", "-c", `echo  "\" ${code}\""> ${filePath}   && node apps.js `],
   });
-  const startTime = new Date();
   await container.start();
+  const startTime = new Date();
   const logsStream = await container.logs({
     follow: true,
     stdout: true,
@@ -88,8 +88,8 @@ const pythonCompiler = async (code) => {
     },
     Cmd: ["sh", "-c", `echo  ${code} > "${filePath}" && python app.py  `],
   });
-  const startTime = new Date();
   await container.start();
+  const startTime = new Date();
 
   const logsStream = await container.logs({
     follow: true,
@@ -100,7 +100,7 @@ const pythonCompiler = async (code) => {
   const tle = setTimeout(async () => {
     console.log("Sending a TLE");
     await container.stop();
-  }, 2000); // Adjust the time limit as needed
+  }, 3000); // Adjust the time limit as needed
 
   const containerExitStatus = await container.wait();
 

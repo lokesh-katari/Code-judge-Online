@@ -106,6 +106,7 @@ exports.submitSolution = async (req, res) => {
       processId: processId,
       userId: userId,
       submittedAt: formattedTime,
+      P_id: P_id,
     };
     await channel.assertQueue(queue);
     await channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)));

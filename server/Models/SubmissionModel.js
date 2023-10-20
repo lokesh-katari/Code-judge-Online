@@ -7,6 +7,15 @@ const Submissions = new mongoose.Schema({
     required: true,
   },
   result: {
+    P_id: {
+      type: mongoose.Schema.ObjectId,
+      ref: "codeQue",
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
     msg: {
       type: String,
       required: true,
@@ -23,6 +32,18 @@ const Submissions = new mongoose.Schema({
       type: Array,
     },
     codeSubmitted: {
+      type: String,
+      required: true,
+    },
+    executionTime: {
+      type: Number,
+      // required: true,
+    },
+    language: {
+      type: String,
+      required: true,
+    },
+    answer: {
       type: String,
       required: true,
     },

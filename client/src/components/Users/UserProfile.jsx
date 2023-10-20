@@ -20,7 +20,10 @@ const UserProfile = () => {
 
   const url = useSelector((state) => state.userSlice.profileUrl);
   const name = useSelector((state) => state.userSlice.name);
-
+  const problemCount = useSelector((state) => state.userSlice.problemCount);
+  const Hard = useSelector((state) => state.userSlice.submissions.Hard);
+  const Medium = useSelector((state) => state.userSlice.submissions.Medium);
+  const Easy = useSelector((state) => state.userSlice.submissions.Easy);
   const { phone, Email } = useSelector((state) => state.userSlice.userData);
   const isLoggedIn = useSelector((state) => state.userSlice.loggedIn);
   const isUpdated = useSelector((state) => state.userSlice.isUpdated);
@@ -203,7 +206,12 @@ const UserProfile = () => {
               </div>
               <div className="col-span-2 row-span-4  ">
                 <div className="flex items-center justify-center ">
-                  <Submissions />
+                  <Submissions
+                    problemCount={problemCount}
+                    Hard={Hard}
+                    Medium={Medium}
+                    Easy={Easy}
+                  />
                 </div>
                 <div className="col-span-2 row-span-3">
                   <UserSubmissions />

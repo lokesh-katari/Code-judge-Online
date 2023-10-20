@@ -13,6 +13,12 @@ const initialState = {
   error: null,
   isUpdated: false,
   message: "",
+  submissions: {
+    Easy: 0,
+    Medium: 0,
+    Hard: 0,
+  },
+  problemCount: 0,
 };
 export const LoginUser = createAsyncThunk(
   "login/user",
@@ -30,6 +36,22 @@ export const LoginUser = createAsyncThunk(
     return data;
   }
 );
+// export const updateUserSubmission = createAsyncThunk(
+//   "user/pro_update",
+//   async (P_id, difficultyLevel) => {
+//     const { data } = await axios.post(
+//       "/api/v1/user/updatesubmission",
+//       { P_id, difficultyLevel },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           withCredentials: true,
+//         },
+//       }
+//     );
+//     return data;
+//   }
+// );
 export const resetpassword = createAsyncThunk(
   "reset/password",
   async ({ token, password, confirmPassword }) => {
@@ -202,6 +224,10 @@ const userSlice = createSlice({
       state.userData = action.payload.data;
       state.profileUrl = action.payload.data.avator.url;
       state.name = action.payload.data.name;
+      state.problemCount = action.payload.data.submissions.length;
+      state.submissions["Hard"] = action.payload.data.problemCount["Hard"];
+      state.submissions["Easy"] = action.payload.data.problemCount["Easy"];
+      state.submissions["Medium"] = action.payload.data.problemCount["Medium"];
     },
     [UserDetails.rejected]: (state, action) => {
       state.loading = false;

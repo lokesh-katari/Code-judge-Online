@@ -1,6 +1,5 @@
 const amqp = require("amqplib");
 const Submission = require("../Models/SubmissionModel");
-
 const {
   nodejsCompiler,
   pythonCompiler,
@@ -47,7 +46,8 @@ async function rcp2() {
     let userId = message.userId;
     let SubmittedAt = message.submittedAt;
     let proTitle = message.proTitle;
-
+    let answer = "Correct";
+    let P_id = message.P_id;
     // console.log(msg.content.toString());
     //result Queue
     let result;
@@ -62,11 +62,12 @@ async function rcp2() {
         );
         let formatcode = JSON.stringify(hiddenTestCasesTemplate);
         code += formatcode;
-        let { output, isError } = await nodejsCompiler(code);
+        let { output, isError, executionTime } = await nodejsCompiler(code);
 
         output = output.replace(/\u001b\[\d{1,2}m/g, "");
         let testCases = OutputSeperator(output, language);
         let passedCases = solutionJudge(totalOutputs, testCases);
+        answer = passedCases.length === 5 ? "Correct" : "Wrong";
         if (isError) {
           await Submission.create({
             user: userId,
@@ -76,6 +77,10 @@ async function rcp2() {
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
               codeSubmitted: subCode,
+              executionTime: executionTime,
+              answer: "Execution error",
+              title: proTitle,
+              P_id: P_id,
             },
             processId: processId,
           });
@@ -89,6 +94,11 @@ async function rcp2() {
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
               codeSubmitted: subCode,
+              executionTime: executionTime,
+              language: language,
+              answer: answer,
+              title: proTitle,
+              P_id: P_id,
             },
             processId: processId,
           });
@@ -104,12 +114,13 @@ async function rcp2() {
         let formatcode = JSON.stringify(hiddenTestCasesTemplate);
         code += formatcode;
         // console.log(code);
-        let { output, isError } = await pythonCompiler(code);
+        let { output, isError, executionTime } = await pythonCompiler(code);
         // output = output.replace(/\u001b\[\d{1,2}m/g, '');
         output = output.replace(/[\u0000-\u0008\u000b\u000E-\u001F]/g, "");
         // console.log(output);
         let testCases = OutputSeperator(output, language);
         let passedCases = solutionJudge(totalOutputs, testCases);
+        answer = passedCases.length === 5 ? "Correct" : "Wrong";
         console.log("hey ", passedCases);
         if (isError) {
           await Submission.create({
@@ -120,6 +131,11 @@ async function rcp2() {
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
               codeSubmitted: subCode,
+              executionTime: executionTime,
+              language: language,
+              answer: "Execution error",
+              title: proTitle,
+              P_id: P_id,
             },
             processId: processId,
           });
@@ -133,9 +149,16 @@ async function rcp2() {
               SubmittedAt: SubmittedAt,
               testCases: passedCases,
               codeSubmitted: subCode,
+              executionTime: executionTime,
+              language: language,
+              answer: answer,
+              title: proTitle,
+              P_id: P_id,
             },
             processId: processId,
           });
+          if (testCases.length == 5) {
+          }
         }
       }
     } catch (error) {

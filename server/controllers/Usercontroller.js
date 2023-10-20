@@ -1,5 +1,6 @@
 const ErrorHandler = require("../Utils/ErrorHandler");
 const User = require("../Models/UserSchema");
+const Submission = require("../Models/SubmissionModel");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../Utils/JWTtoken");
 const sendEmail = require("../Utils/sendEmail");
@@ -157,8 +158,44 @@ exports.getUserDetails = catchAsyncErrors(async (req, res) => {
     .status(200)
     .json({ success: true, data, msg: "successfully fetched userDetails" });
 });
-//Updating existing password for the user
+exports.getUserSubmissions = catchAsyncErrors(async (req, res) => {
+  const userId = req.user.id;
 
+  const data = await Submission.find({ user: userId });
+
+  res.status(200).json({
+    success: true,
+    data,
+    msg: "successfully fetched user Submissions",
+  });
+});
+//Updating existing password for the user
+exports.updateSubmissionsforUser = catchAsyncErrors(async (req, res) => {
+  let difficultyLevel = req.body.difficultyLevel;
+  let P_id = req.body.P_id;
+  let userId = req.user.id;
+  console.log(P_id);
+  console.log(userId);
+
+  let user = await User.findById(userId);
+  if (!user) {
+    // Handle the case where the user with the specified ID is not found
+    return res.status(404).json({ error: "User not found" });
+  }
+  const isPIdAlreadySubmitted = user.submissions.some((submission) =>
+    submission.P_id.equals(P_id)
+  );
+
+  if (!isPIdAlreadySubmitted) {
+    // Add the submitted P_id to the submissions array
+    user.submissions.push({ P_id: P_id });
+    // Increment the count for the corresponding category
+    user.problemCount[difficultyLevel]++;
+    // Save the updated user document
+    await user.save();
+  }
+  res.status(200).json({ msg: "updated successfully" });
+});
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("+password");
 

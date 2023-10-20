@@ -1,17 +1,12 @@
-function generateTestCasesinJS(testCases, problemTitle) {
-  let replacedTitle = "";
-  for (let i = 0; i < testCases.length; i++) {
-    replacedTitle += `Test Case ${i + 1} ::\n`;
-    for (let j = 0; j < testCases[i].name.length; j++) {
-      let testcasesString = `let ${testCases[i].name[j]} = ${JSON.stringify(
-        testCases[i].values[j]
-      )}\n`;
-      replacedTitle += testcasesString;
-    }
-    replacedTitle += `const result${i + 1} = ${problemTitle}(${testCases[
-      i
-    ].name.join(", ")})\n\n`;
+const formattedDate = new Date("2023-10-19T15:53:24.000Z").toLocaleString(
+  "en-US",
+  {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   }
+);
 
-  return replacedTitle;
-}
+console.log(formattedDate);

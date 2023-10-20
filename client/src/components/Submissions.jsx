@@ -1,6 +1,8 @@
-import React from "react";
-import { ArrowUpRight } from "lucide-react";
-const Submissions = () => {
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { UserDetails } from "../features/User/UserSlice";
+const Submissions = ({ problemCount, Easy, Hard, Medium }) => {
   return (
     <>
       {" "}
@@ -16,13 +18,13 @@ const Submissions = () => {
         </div>
         <div>
           <div className="p-4 flex flex-col ">
-            <h1 className="inline-flex items-center text-lg font-semibold">
+            <h1 className="inline-flex items-center text-lg font-semibold p-2 ">
               Easy :
             </h1>
-            <h1 className="inline-flex items-center text-lg font-semibold">
+            <h1 className="inline-flex items-center text-lg font-semibold p-2">
               Medium :
             </h1>
-            <h1 className="inline-flex items-center text-lg font-semibold">
+            <h1 className="inline-flex items-center text-lg font-semibold p-2 ">
               Hard :
             </h1>
 
