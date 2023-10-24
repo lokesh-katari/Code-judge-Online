@@ -22,17 +22,21 @@ async function rcp() {
     const code = message.code;
     const actualOutput = message.actualOutput;
     const formattedTime = message.formattedTime;
+    const isOnlineCompiler = message.isOnlineCompiler;
     // console.log(msg.content.toString());
     //result Queue
     let result;
+    let passedCases;
     try {
       if (language === "javascript") {
         let { output, isError, executionTime } = await nodejsCompiler(code);
         console.log(executionTime, "this is eceution itme");
 
         output = output.replace(/\u001b\[\d{1,2}m/g, "");
-        let testCases = OutputSeperator(output, language);
-        let passedCases = solutionJudge(actualOutput.output, testCases);
+        if (!isOnlineCompiler) {
+          let testCases = OutputSeperator(output, language);
+          passedCases = solutionJudge(actualOutput.output, testCases);
+        }
         if (isError) {
           result = {
             msg: "Execution error:",
@@ -55,11 +59,17 @@ async function rcp() {
       if (language === "python") {
         let { output, isError, executionTime } = await pythonCompiler(code);
         console.log("this is eexecution time", executionTime);
-        // output = output.replace(/\u001b\[\d{1,2}m/g, '');
+        // output = output.replace(/\u001b\[\d{1,2}m/g, "");
         output = output.replace(/[\u0000-\u0008\u000b\u000E-\u001F]/g, "");
         // console.log(output);
-        let testCases = OutputSeperator(output, language);
-        let passedCases = solutionJudge(actualOutput.output, testCases);
+        // output = output.replace(
+        //   /[\u0000-\u0008\u000A-\u000E\u0010-\u001F]/g,
+        //   ""
+        // );
+        if (!isOnlineCompiler) {
+          let testCases = OutputSeperator(output, language);
+          passedCases = solutionJudge(actualOutput.output, testCases);
+        }
         if (isError) {
           result = {
             msg: "Execution error: tata",

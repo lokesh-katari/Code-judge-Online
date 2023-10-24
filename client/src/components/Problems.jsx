@@ -11,9 +11,7 @@ export function Problems() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data } = await axios.get(
-          "/api/v1/allProblems"
-        );
+        const { data } = await axios.get("/api/v1/allProblems");
         setloading(false);
 
         setproblems(data.problems);
@@ -47,7 +45,7 @@ export function Problems() {
       ) : (
         <>
           <>
-            <section className="mx-auto w-full max-w-7xl px-4 py-4 mt-28">
+            <section className="mx-auto w-full max-w-7xl px-4 py-4 mt-28 min-h-screen">
               <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
                 <div>
                   <h2 className="text-lg font-semibold">Problems</h2>

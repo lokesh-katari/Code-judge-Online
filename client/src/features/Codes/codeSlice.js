@@ -11,10 +11,10 @@ const initialState = {
 };
 export const compileCode = createAsyncThunk(
   "code/compile",
-  async ({ code, language, id }) => {
+  async ({ code, language, id, isOnlineCompiler }) => {
     const { data } = await axios.post(
       "/api/v1/compile",
-      { code, language, id },
+      { code, language, id, isOnlineCompiler },
       {
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const codeSlice = createSlice({
       let parOut = action.payload.output;
       state.output = parOut.replace(/\\n|\\r\\n|<br>/g, "\n");
       state.message = action.payload.msg;
-      state.testCasesPassed = action.payload.testCases;
+      state.testCasesPassed = action.payload.testCases ?? [];
     },
     [compileCode.rejected]: (state, action) => {
       state.loading = false;

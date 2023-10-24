@@ -48,7 +48,7 @@ export const Navbar = () => {
     setsearchText(e.target.value.trim());
   };
   return (
-    <div className=" fixed top-0 w-full overflow-hidden z-50 bg-gray-900 opacity-90">
+    <div className=" fixed top-0 w-full overflow-hidden z-50 bg-gray-900 opacity-70">
       <nav className="  px-8 py-4 flex justify-between items-center border-y border-gray-400">
         <Link
           to="/"
@@ -56,7 +56,7 @@ export const Navbar = () => {
         >
           <span className="text-slate-200 " t>
             {" "}
-            Code Realm
+            CodeRealm
           </span>
         </Link>
         <div className="lg:hidden">
@@ -89,6 +89,14 @@ export const Navbar = () => {
             </Link>
           </li>
           <li>
+            <Link
+              className="text-gray-100 dark:text-gray-100 hover:text-gray-500 px-4 py-2"
+              to="/onlineCompiler"
+            >
+              Online Compiler
+            </Link>
+          </li>
+          <li>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
@@ -106,7 +114,7 @@ export const Navbar = () => {
                   />
                 </svg>
               </span>
-              <form action="">
+              {/* <form action="">
                 <input
                   type="text"
                   className="py-2 pl-10 pr-4 text-sm text-gray-700 bg-gray-100 rounded-md focus:outline-none focus:bg-white focus:text-gray-900"
@@ -133,7 +141,7 @@ export const Navbar = () => {
                     </svg>
                   </span>
                 </button>
-              </form>
+              </form> */}
             </div>
           </li>
           {isLoggedIn ? (

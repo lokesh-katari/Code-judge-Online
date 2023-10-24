@@ -13,6 +13,7 @@ import {
 import UpdatePassword from "./UpdatePassword";
 import Submissions from "../Submissions";
 import UserSubmissions from "../UserSubmissions";
+import LanguagesCard from "../LanguagesCard";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -245,6 +246,7 @@ const UserProfile = () => {
           </h1>
         </div>
       </div>
+      <LanguagesCard />
     </>
   );
 };

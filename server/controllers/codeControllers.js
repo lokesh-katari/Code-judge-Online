@@ -23,12 +23,15 @@ const { error } = require("console");
 
 exports.CompileCode = async (req, res) => {
   const currentTime = Date.now();
-
+  let actualOutput;
+  const isOnlineCompiler = req.body.isOnlineCompiler;
   const formattedTime = moment(currentTime).format("YYYY-MM-DD HH:mm:ss");
   let code = req.body.code;
   // code = JSON.parse(code); //json parsing should be avoided
-  let P_id = req.body.id;
-  let actualOutput = await codeQueSchema.findById(P_id).select("output");
+  if (!isOnlineCompiler) {
+    let P_id = req.body.id;
+    actualOutput = await codeQueSchema.findById(P_id).select("output");
+  }
   let language = req.body.language;
   const connection = await amqp.connect("amqp://localhost");
   const channel = await connection.createChannel();
@@ -39,6 +42,7 @@ exports.CompileCode = async (req, res) => {
     code: code,
     actualOutput: actualOutput,
     formattedTime: formattedTime,
+    isOnlineCompiler: isOnlineCompiler,
   };
 
   await channel.assertQueue(queue);

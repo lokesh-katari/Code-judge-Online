@@ -8,6 +8,8 @@ import UserProfile from "./components/Users/UserProfile";
 
 import { Problems } from "./components/Problems";
 import Main from "./components/Main";
+import CodeEditor from "./components/CodeEditor";
+import Footer from "./components/Footer";
 function App() {
   return (
     <>
@@ -21,8 +23,10 @@ function App() {
           <Route path="/problems" element={<Problems />} />
           <Route path="/problems/:id" element={<Home />} />
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/onlineCompiler" element={<CodeEditor />} />
         </Routes>
       </BrowserRouter>
+      <Footer />
     </>
   );
 }
