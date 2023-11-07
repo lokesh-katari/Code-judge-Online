@@ -25,13 +25,13 @@ const UserSubmissions = () => {
   }, []);
   return (
     <>
-      <section className="mx-auto w-full   mt-5 max-w-3xl">
+      <section className="mx-auto w-full   mt-5 max-w-3xl ">
         <div>
           <h2 className="text-xl font-semibold pl-1 "> Submissions :</h2>
         </div>
 
-        <div className="mt-2 flex flex-col border-slate-950 border-solid border-4 rounded-md">
-          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="mt-2 flex flex-col border-slate-950 border-solid border-4 rounded-md overflow-auto h-96 ">
+          <div className="-mx-4 -my-2  sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
               <div className="overflow-hidden border border-gray-200 md:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">

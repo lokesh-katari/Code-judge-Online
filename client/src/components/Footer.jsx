@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <>
       <section
-        className="relative overflow-hidden bg-white py-8"
+        className="relative overflow-hidden bg-white py-8 "
         data-aos="fade-up"
       >
         <div className="container relative z-10 mx-auto px-4">
@@ -164,7 +164,7 @@ const Footer = () => {
           </div>
         </div>
       </section>
-      <div className="text-center mt-3 font-medium text-gray-600 hover:text-gray-700">
+      <div className="text-center mt-3 font-medium text-gray-600 hover:text-gray-700 p-3">
         <p>&copy; 2023 CodeRealm. All rights reserved.</p>
         <p className="mt-2">
           Designed and Developed by <b>Lokesh Katari</b>

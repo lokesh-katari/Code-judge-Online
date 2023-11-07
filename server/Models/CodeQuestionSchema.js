@@ -13,6 +13,22 @@ const codeQueUpload = new mongoose.Schema({
       },
     },
   ],
+  Category: {
+    type: String,
+    required: true,
+  },
+  Submissions: {
+    Wrong: {
+      type: Number,
+      default: 1,
+      required: true,
+    },
+    Correct: {
+      type: Number,
+      default: 1,
+      required: true,
+    },
+  },
   ProblemTitle: {
     type: String,
     required: true,

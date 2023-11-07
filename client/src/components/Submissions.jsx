@@ -11,7 +11,7 @@ const Submissions = ({ problemCount, Easy, Hard, Medium }) => {
           {/* // className="h-full w-full rounded-md object-cover" */}
           <div className="h-full w-full flex rounded-md object-cover flex-col">
             <div className="text-8xl p-2 flex justify-center items-center h-3/4">
-              20
+              {problemCount}
             </div>
             <span className=" flex justify-center items-center">Solved!</span>
           </div>
@@ -19,13 +19,13 @@ const Submissions = ({ problemCount, Easy, Hard, Medium }) => {
         <div>
           <div className="p-4 flex flex-col ">
             <h1 className="inline-flex items-center text-lg font-semibold p-2 ">
-              Easy :
+              Easy :{Easy}
             </h1>
             <h1 className="inline-flex items-center text-lg font-semibold p-2">
-              Medium :
+              Medium :{Medium}
             </h1>
             <h1 className="inline-flex items-center text-lg font-semibold p-2 ">
-              Hard :
+              Hard :{Hard}
             </h1>
 
             <div className="mt-3 flex items-center space-x-2"></div>

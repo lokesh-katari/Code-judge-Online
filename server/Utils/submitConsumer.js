@@ -1,5 +1,6 @@
 const amqp = require("amqplib");
 const Submission = require("../Models/SubmissionModel");
+const Question = require("../Models/CodeQuestionSchema");
 const {
   nodejsCompiler,
   pythonCompiler,
@@ -46,11 +47,9 @@ async function rcp2() {
     let userId = message.userId;
     let SubmittedAt = message.submittedAt;
     let proTitle = message.proTitle;
-    let answer = "Correct";
+    let answer = true;
     let P_id = message.P_id;
-    // console.log(msg.content.toString());
-    //result Queue
-    let result;
+    let isCorrect = false;
     let i = 3;
     try {
       if (language === "javascript") {
@@ -67,7 +66,7 @@ async function rcp2() {
         output = output.replace(/\u001b\[\d{1,2}m/g, "");
         let testCases = OutputSeperator(output, language);
         let passedCases = solutionJudge(totalOutputs, testCases);
-        answer = passedCases.length === 5 ? "Correct" : "Wrong";
+        answer = passedCases.length === 5 ? true : false;
         if (isError) {
           await Submission.create({
             user: userId,
@@ -85,6 +84,7 @@ async function rcp2() {
             processId: processId,
           });
         } else {
+          isCorrect = answer;
           console.log("hey ", passedCases);
           await Submission.create({
             user: userId,
@@ -141,6 +141,7 @@ async function rcp2() {
           });
         } else {
           // console.log("hey ", passedCases);
+          isCorrect = answer;
           await Submission.create({
             user: userId,
             result: {
@@ -161,6 +162,11 @@ async function rcp2() {
           }
         }
       }
+      const update = isCorrect
+        ? { $inc: { "Submissions.Correct": 1 } }
+        : { $inc: { "Submissions.Wrong": 1 } };
+      console.log(update);
+      await Question.findByIdAndUpdate(P_id, update);
     } catch (error) {
       console.log(error);
     }

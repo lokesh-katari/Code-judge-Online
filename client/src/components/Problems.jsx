@@ -7,7 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 export function Problems() {
   const [problems, setproblems] = useState([]);
   const [loading, setloading] = useState(true);
-
+  let Acceptance;
   useEffect(() => {
     async function fetchData() {
       try {
@@ -99,34 +99,46 @@ export function Problems() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 bg-white">
-                          {problems.map((problem) => (
-                            <tr key={problem._id}>
-                              <td className="whitespace-nowrap px-4 py-4">
-                                <div className="flex items-center">
-                                  <div className="ml-4">
-                                    <div className="text-sm font-medium text-gray-900">
-                                      <Link to={`${problem._id}`}>
-                                        {problem.ProblemTitle}
-                                      </Link>
+                          {problems.map((problem) => {
+                            Acceptance =
+                              (problem.Submissions.Correct /
+                                (problem.Submissions.Correct +
+                                  problem.Submissions.Wrong)) *
+                              100;
+
+                            return (
+                              <>
+                                <tr key={problem._id}>
+                                  <td className="whitespace-nowrap px-4 py-4">
+                                    <div className="flex items-center">
+                                      <div className="ml-4">
+                                        <div className="text-sm font-medium text-gray-900">
+                                          <Link to={`${problem._id}`}>
+                                            {problem.ProblemTitle}
+                                          </Link>
+                                        </div>
+                                      </div>
                                     </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="whitespace-nowrap px-12 py-4">
-                                <div className="text-sm text-gray-700  ">
-                                  Nill
-                                </div>
-                              </td>
-                              <td className="whitespace-nowrap px-4 py-4">
-                                <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                                  {problem.Difficulty}
-                                </span>
-                              </td>
-                              <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">
-                                {problem.Category}
-                              </td>
-                            </tr>
-                          ))}
+                                  </td>
+                                  <td className="whitespace-nowrap px-12 py-4">
+                                    <div className="text-base text-gray-700 font-semibold  ">
+                                      {Acceptance.toFixed(2)}%
+                                    </div>
+                                  </td>
+                                  <td className="whitespace-nowrap px-4 py-4">
+                                    <span
+                                      className={`inline-flex  rounded-full  px-2 text-xs font-semibold leading-5 text-black`}
+                                    >
+                                      {problem.DifficultyLevel}
+                                    </span>
+                                  </td>
+                                  <td className="whitespace-nowrap px-4 py-4 text-sm text-gray-700">
+                                    {problem.Category}
+                                  </td>
+                                </tr>
+                              </>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>

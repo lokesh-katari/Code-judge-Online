@@ -30,11 +30,12 @@ async function rcp() {
     try {
       if (language === "javascript") {
         let { output, isError, executionTime } = await nodejsCompiler(code);
-        console.log(executionTime, "this is eceution itme");
+        // console.log(executionTime, "this is eceution itme");
 
         output = output.replace(/\u001b\[\d{1,2}m/g, "");
         if (!isOnlineCompiler) {
           let testCases = OutputSeperator(output, language);
+          console.log(testCases, actualOutput.output);
           passedCases = solutionJudge(actualOutput.output, testCases);
         }
         if (isError) {

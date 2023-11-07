@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,7 +21,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
 
   const [searchText, setsearchText] = useState("");
-
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
   const isLoggedIn = useSelector((state) => state.userSlice.loggedIn);
   const url = useSelector((state) => state.userSlice.profileUrl);
   const name = useSelector((state) => state.userSlice.name);
@@ -43,13 +43,53 @@ export const Navbar = () => {
   //   setsearchText("");
   //   navigate("/products/search");
   // };
+  // useEffect(() => {
+  //   let prevScrollPos = window.scrollY;
 
-  const handleSearch = (e) => {
-    setsearchText(e.target.value.trim());
-  };
+  //   const handleScroll = () => {
+  //     const currentScrollPos = window.scrollY;
+  //     setIsScrollingDown(currentScrollPos > prevScrollPos);
+  //     prevScrollPos = currentScrollPos;
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
+  const [scrollY, setScrollY] = useState(0);
+  const scrollThreshold = 300; // Set your desired threshold for hiding the navbar
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+      setScrollY(currentScrollPos);
+
+      if (scrollY < scrollThreshold && currentScrollPos > scrollThreshold) {
+        setIsScrollingDown(true);
+      } else if (scrollY > scrollThreshold && currentScrollPos < scrollY) {
+        setIsScrollingDown(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollY]);
+
   return (
-    <div className=" fixed top-0 w-full overflow-hidden z-50 bg-gray-900 opacity-70">
-      <nav className="  px-8 py-4 flex justify-between items-center border-y border-gray-400">
+    // <div className=" fixed top-0 w-full overflow-hidden z-50 bg-gray-900 opacity-70">
+    <div
+      className={`w-full top-0 bg-gray-900 ${
+        isScrollingDown
+          ? "transform -translate-y-20"
+          : "transform translate-y-0"
+      } transition-transform fixed z-20 opacity-70`}
+    >
+      <nav className="  px-8 py-4 flex justify-between items-center border-y ">
         <Link
           to="/"
           className="text-3xl font-bold leading-none flex items-center space-x-4"
@@ -98,22 +138,6 @@ export const Navbar = () => {
           </li>
           <li>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-4 h-4 text-gray-900"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </span>
               {/* <form action="">
                 <input
                   type="text"

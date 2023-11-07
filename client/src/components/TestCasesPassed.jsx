@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-function TestCasesPassed({ testcasespassed, mode }) {
+function TestCasesPassed({ testcasespassed, mode, id, diff }) {
+  const updateUserSubmissions = async (id, diff) => {
+    if (testcasespassed.length === 5) {
+      await axios.post("/api/v1/user/updatesubmission", {
+        P_id: id,
+        difficultyLevel: diff,
+      });
+    }
+  };
+
   let totalTestCases;
   let result = "WRONG ANSWER";
   mode === "RUN" ? (totalTestCases = 2) : (totalTestCases = 5);
@@ -9,10 +19,12 @@ function TestCasesPassed({ testcasespassed, mode }) {
   }
   if (testcasespassed.length === 5) {
     result = "CORRECT ANSWER";
+    updateUserSubmissions(id, diff);
   }
   if (mode === "IDLE") {
     totalTestCases = 5;
   }
+
   // const [testcasespassed, setTestCasesPassed] = useState(testcasespass); // Example array of passed test case indexes
   useEffect(() => {
     // Update the results based on testcasespassed

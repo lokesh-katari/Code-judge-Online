@@ -90,7 +90,7 @@ const UserProfile = () => {
           <div className=" w-full ">
             <div className="grid grid-rows-4 grid-cols-3 grid-flow-col  h-5/6 mt-24 m-7 gap-1">
               <div
-                className=" border-slate-950 border-solid border-4  col-span-1 row-span-4 rounded-lg"
+                className=" border-slate-950 border-solid border-4  col-span-1 row-span-2 rounded-lg"
                 style={{
                   height: "97%",
                   padding: "16px",
@@ -205,7 +205,7 @@ const UserProfile = () => {
                   </Link>
                 </div>
               </div>
-              <div className="col-span-2 row-span-4  ">
+              <div className="col-span-2 row-span-3  ">
                 <div className="flex items-center justify-center ">
                   <Submissions
                     problemCount={problemCount}
@@ -214,7 +214,7 @@ const UserProfile = () => {
                     Easy={Easy}
                   />
                 </div>
-                <div className="col-span-2 row-span-3">
+                <div className="col-span-2 row-span-2">
                   <UserSubmissions />
                 </div>
               </div>

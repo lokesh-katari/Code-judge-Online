@@ -182,9 +182,10 @@ exports.updateSubmissionsforUser = catchAsyncErrors(async (req, res) => {
     // Handle the case where the user with the specified ID is not found
     return res.status(404).json({ error: "User not found" });
   }
-  const isPIdAlreadySubmitted = user.submissions.some((submission) =>
-    submission.P_id.equals(P_id)
-  );
+  const isPIdAlreadySubmitted = user.submissions.some((submission) => {
+    console.log(submission);
+    return submission.P_id.equals(P_id);
+  });
 
   if (!isPIdAlreadySubmitted) {
     // Add the submitted P_id to the submissions array

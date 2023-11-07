@@ -7,7 +7,7 @@ import { fadeIn, textVariant } from "../utils/motion";
 const LanguagesCard = ({ index, title, icon }) => {
   return (
     <>
-      <Tilt className="xs:w-[250px] shadow-[rgba(6,_24,_44,_0.4)_0px_0px_0px_2px,_rgba(6,_24,_44,_0.65)_0px_4px_6px_-1px,_rgba(255,_255,_255,_0.08)_0px_1px_0px_inset] border-2 rounded-xl w-1/4 bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-200 via-slate-600 to-indigo-300">
+      <Tilt className="xs:w-[250px] shadow-[rgba(6,_24,_44,_0.4)_0px_0px_0px_2px,_rgba(6,_24,_44,_0.65)_0px_4px_6px_-1px,_rgba(255,_255,_255,_0.08)_0px_1px_0px_inset] border-2 rounded-xl w-1/4 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-pink-300 via-purple-400 to-indigo-700">
         <motion.div
           variants={fadeIn("right", "spring", index * 0.5, 0.75)}
           className="w-full green-pink-gradient  rounded-[20px] shadow-slate-700"

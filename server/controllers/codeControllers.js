@@ -118,6 +118,7 @@ exports.submitSolution = async (req, res) => {
     // console.log(hiddenTestCasesTemplate);
     await channel.close();
     await connection.close();
+
     res
       .status(200)
       .json({ msg: "code submission queued", processId: processId });
@@ -138,6 +139,7 @@ exports.codeQueSubmit = async (req, res) => {
       hiddenOutputs,
       hiddenTestCases,
       DifficultyLevel,
+      Category,
     } = req.body;
     let proTitle = creatingProTitle(problemTitle);
 
@@ -188,6 +190,7 @@ ${testCasesTemplate}
       hiddenOutputs: hiddenOutputs,
       hiddenTestCases: hiddenTestCases,
       DifficultyLevel: DifficultyLevel,
+      Category: Category,
     });
     // output = output.replace(/\u001b\[\d{1,2}m/g, '');
 
@@ -236,3 +239,56 @@ exports.fetchResult = async (req, res) => {
     });
   }
 };
+
+// Code contribution format
+// {
+//   "problemTitle": "bubblesort",
+//   "problemDesc": "this is a program of bubble sort",
+//   "returnType": "list",
+//   "testCases": [
+//     {
+//       "name": ["List1"],
+//       "values": [
+//         [1,2,3,4,5]
+//       ]
+//     },
+//     {
+//       "name": ["List2"],
+//       "values": [
+//         [1, 2, 3, 4, 5 ]
+//       ]
+//     }
+//   ],
+//   "inputParams": ["List3"],
+//   "output": [
+//     "[ 1, 2, 3, 4, 5 ]",
+//     "[ 1, 2, 3, 4, 5 ]"
+//   ],
+//   "hiddenTestCases": [
+//     {
+//       "name": ["List4"],
+//       "values": [
+//         "[ 1, 2, 3, 4, 5, 3, 7, 8, 6 ]"
+//       ]
+//     },
+//     {
+//       "name": ["List5"],
+//       "values": [
+//         [1, 2, 3, 4, 5, 3, 7, 8, 6]
+//       ]
+//     },
+//     {
+//       "name": ["List6"],
+//       "values": [
+//         [1, 2, 3, 4, 5, 3, 7, 8, 6]
+//       ]
+//     }
+//   ],
+//   "hiddenOutputs": [
+//     [1, 2, 3, 3, 4, 5, 6, 7, 8],
+//     [1, 2, 3, 3, 4, 5, 6, 7, 8],
+//     [1, 2, 3, 3, 4, 5, 6, 7, 8]
+//   ],
+//   "DifficultyLevel": "Easy",
+//   "Category":"Array"
+// }
