@@ -67,4 +67,18 @@ We welcome contributions from the community. If you'd like to contribute to Code
 
 This project is licensed under the [MIT License](link-to-your-license-file.md).
 
+##Project Demo
+https://github.com/lokesh-katari/Code-judge-Online/assets/111894942/366ab6b0-5654-47a9-ae28-14308933c3cc
+
+##Screenshots of the user interface
+![cr1](https://github.com/lokesh-katari/Code-judge-Online/assets/111894942/f35192c5-7186-4336-a6b1-ec09ef47b0c0)
+
+![cr6](https://github.com/lokesh-katari/Code-judge-Online/assets/111894942/89d41969-7407-4c57-b9b5-ffc0b1d214d0)
+
+![cr5](https://github.com/lokesh-katari/Code-judge-Online/assets/111894942/abc75eed-2618-4b17-a101-1fd60a3e1d6f)
+
+
+
+
+
 ---
