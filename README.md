@@ -1,7 +1,5 @@
 # CodeRealm
 
-![CodeRealm Logo](link-to-your-logo.png)
-
 CodeRealm is a Docker-Based Code Execution Platform that empowers users to submit, execute, and evaluate code and test cases securely. It's designed to be a dynamic and secure environment for code evaluation and execution, with a focus on system design principles and scalability.
 
 ## Table of Contents
