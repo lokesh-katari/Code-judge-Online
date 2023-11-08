@@ -1,4 +1,6 @@
-# CodeRealm
+<div  style="padding: 20px">
+
+  # CodeRealm
 
 CodeRealm is a Docker-Based Code Execution Platform that empowers users to submit, execute, and evaluate code and test cases securely. It's designed to be a dynamic and secure environment for code evaluation and execution, with a focus on system design principles and scalability.
 
@@ -90,3 +92,5 @@ https://github.com/lokesh-katari/Code-judge-Online/assets/111894942/366ab6b0-565
 
 
 ---
+
+</div>
